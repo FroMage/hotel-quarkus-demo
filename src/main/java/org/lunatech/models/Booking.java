@@ -41,10 +41,6 @@ public class Booking extends PanacheEntity {
     @javax.validation.constraints.Pattern(regexp = "^\\d{16}$", message = "Credit card number must be 16 digits")
     public String creditCard;
 
-
-    public Booking() {
-    }
-
     public static Booking clearCreditCard(Booking booking) {
         booking.creditCard = booking.creditCard.substring(0,3) + "**** **** ****";
         return booking;

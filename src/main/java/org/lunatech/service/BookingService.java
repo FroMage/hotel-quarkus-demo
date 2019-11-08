@@ -38,7 +38,7 @@ public class BookingService {
             throw new WebApplicationException(erroMsgOrOk.getLeft(), 400);
         }
 
-        return Response.ok("{\"result\":\"booking created\"}").status(200).build();
+        return Response.ok("{\"result\":\"booking created\"}").build();
     }
 
     @Provider

@@ -44,7 +44,7 @@ public class BookingResource {
     @GET
     @Path("ref/{bookingRef}")
     public Booking findByReference(@PathParam UUID bookingRef) {
-        PanacheQuery<Booking> query = Booking.find("bookingRef = ?1", bookingRef);
+        PanacheQuery<Booking> query = Booking.find("bookingRef", bookingRef);
         if (query.count() == 0) {
             throw new WebApplicationException("No booking for this reference", 404);
         }

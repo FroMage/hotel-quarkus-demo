@@ -35,7 +35,4 @@ public class Hotel extends PanacheEntity {
     @Column(length=10485760)
     public String description;
 
-    public Hotel() {
-    }
-
 }
