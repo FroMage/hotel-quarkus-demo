@@ -1,16 +1,13 @@
 package org.lunatech.service;
 
-import io.vavr.control.Either;
-import org.lunatech.dto.BookingRequest;
-import org.jboss.resteasy.annotations.jaxrs.PathParam;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.json.Json;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
-import javax.ws.rs.ext.Provider;
+import org.jboss.resteasy.annotations.jaxrs.PathParam;
+import org.lunatech.dto.BookingRequest;
+import org.lunatech.quarkus.JsonController;
+import org.lunatech.quarkus.JsonEntity;
+import org.lunatech.quarkus.Required;
 
 /**
  * Service to create Booking request object.
@@ -18,42 +15,17 @@ import javax.ws.rs.ext.Provider;
  *
  * @author created by N.Martignole, Lunatech, on 2019-06-11.
  */
-@Path("bookingService")
-@ApplicationScoped
-@Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON)
-public class BookingService {
+// implicit @Path(controllername)
+public class BookingService extends JsonController {
     @POST
     @Path("hotel/{hotelId}")
-    public Response create(@PathParam String hotelId,
-                           BookingRequest bookingRequest) {
-        if (hotelId == null) {
-            throw new WebApplicationException("hotelId must be specified", 422);
-        }
+    public JsonEntity create(@Required @PathParam String hotelId,
+                             BookingRequest bookingRequest) {
 
         System.out.println("Booking request " + bookingRequest);
 
-        Either<String,String> erroMsgOrOk = bookingRequest.isValid();
-        if(erroMsgOrOk.isLeft()){
-            throw new WebApplicationException(erroMsgOrOk.getLeft(), 400);
-        }
+        validate(bookingRequest);
 
-        return Response.ok("{\"result\":\"booking created\"}").build();
+        return JsonEntity.result("booking created");
     }
-
-    @Provider
-    public static class ErrorMapper implements ExceptionMapper<Exception> {
-        @Override
-        public Response toResponse(Exception exception) {
-            int code = 500;
-            if (exception instanceof WebApplicationException) {
-                code = ((WebApplicationException) exception).getResponse().getStatus();
-            }
-            return Response.status(code)
-                    .entity(Json.createObjectBuilder().add("error", exception.getMessage()).add("code", code).build())
-                    .build();
-        }
-
-    }
-
 }
